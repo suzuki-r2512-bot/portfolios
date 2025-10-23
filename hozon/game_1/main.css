@@ -1,0 +1,35 @@
+body {
+    /* ここに全体の装飾を書く */
+    background-color: aliceblue;
+    text-align: center;
+}
+
+#face {
+    /* ここに画像の装飾を書く */
+    width: 500px;padding-top: 20px;
+}
+
+/* ここから下は吹き出しの装飾 */
+
+.balloon {
+    position: relative;
+    font-size: 30px;
+    color: #FFFFFF;
+    background-color: #3ADF00;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.balloon::before {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    border-top: 20px solid #3ADF00;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+}
+
+p{
+    float: left;
+}
