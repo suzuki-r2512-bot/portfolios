@@ -1,5 +1,14 @@
 const button = document.querySelector("#button");
 let tokenizer;
+const seikai = new Howl({
+    src:"./sounds/cat_seikai.mp3"
+})
+const batu = new Howl({
+    src:"./sounds/cat_batu.mp3"
+})
+const judge_sound = new Howl({
+    src:"./sounds/judge.mp3"
+})
 // 形態素解析(文章の分析)の準備
 kuromoji.builder({ dicPath: "https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/" }).
     build(function (error, _tokenizer) {
@@ -19,6 +28,7 @@ button.addEventListener("click", function () {
         const point = check(message);
         reset();
         judge(point);
+        judge_sound.play()
     }
 });
 
@@ -33,31 +43,37 @@ function reset() {
 
 // 審議ネコを表示する
 function judge(point) {
-    // 0.5秒後に審議ネコ1を表示する
+    // 1秒後に審議ネコ1を表示する
     setTimeout(function() {
         if(point >= 1){
             document.querySelector("#judge_1").className = "judge ok cat1"
+            seikai.play()
         } else{
             document.querySelector("#judge_1").className = "judge ng cat1"
+            batu.play()
         }
-    }, 500);
-    // 1秒後に審議ネコ2を表示する
+    }, 1000);
+    // 2秒後に審議ネコ2を表示する
     setTimeout(function() {
         if(point >= 2){
             document.querySelector("#judge_2").className = "judge ok cat2"
+            seikai.play()
         } else{
             document.querySelector("#judge_2").className = "judge ng cat2"
+            batu.play()
         }
-    }, 1000);
-    // 1.5秒後に審議ネコ3を表示する
+    }, 2000);
+    // 3秒後に審議ネコ3を表示する
     setTimeout(function() {
         if(point >= 3){
             document.querySelector("#judge_3").className = "judge ok cat3"
+            seikai.play()
         } else{
             document.querySelector("#judge_3").className = "judge ng cat3"
+            batu.play()
         }
-    }, 1500);
-    // 2秒後に結果を表示する
+    }, 3000);
+    // 4秒後に結果を表示する
     setTimeout(function() {
         switch(point){
             case 0:
@@ -74,7 +90,7 @@ function judge(point) {
                 break
         }
         document.querySelector("#result").className = "kurukuru"
-    }, 2000);
+    }, 4000);
 }
 
 // 点数を審議する
