@@ -33,11 +33,11 @@ for (let row = 0; row < 3; row++) {
 function putMark(row, col) {
     const cell = document.querySelector(`#cell_${row}_${col}`)
     if(turn === 1) {
-        cell.textContent = "*3*"
+        cell.textContent = "〇"
         cell.classList.add("o")
         cells[row][col] = 1
     }else {
-        cell.textContent = "'-'"
+        cell.textContent = "×"
         cell.classList.add("x")
         cells[row][col] = -1
     }
