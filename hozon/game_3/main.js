@@ -128,12 +128,42 @@ function check1(message) {
 
 // ダジャレの判定(単純な同じ単語の繰り返しはNG)
 function check2(message) {
-    
+    const sentence = getSentence(message)
+    if(sentence.original.length != 0 &&
+        sentence.reading.length != 0){
+            for(let noun of sentence.nouns){
+                const hit_original = (sentence.original.match(new RegExp(noun.original,"g"))?? []).length
+                const hit_reading = (sentence.reading.match(new RegExp(noun.reading,"g"))?? []).length
+                if(hit_original < hit_reading) {
+                    return true
+                }
+            }
+        }
     return false;
 }
 
 // ダジャレの判定(読みがちょっと違っていてもOK)
 function check3(message) {
+    const sentence = getSentence(message)
+    if(sentence.original.length != 0 &&
+        sentence.reading.length != 0 &&
+        sentence.pronunciation.length != 0){
+            for(let noun of sentence.nouns){
+                const hit_original = (sentence.original.match(new RegExp(noun.original, "g")) ?? []).length
+                const hit_reading = (sentence.reading.match(new RegExp(noun.reading, "g")) ?? []).length
+                //発音で比較
+                const hit_pronunciation = (sentence.pronunciation.match(new RegExp(noun.pronunciation, "g")) ?? []).length
+                //文中の省略できる文字を省略して比較
+                const short_reading = getShortSentence(sentence.reading)
+                const hit_short = (short_reading.match(new RegExp(noun.reading, "g")) ?? []).length
+                //単語の読みの補正して比較
+                const fuzzy_noun = getFuzzyWord(noun.reading)
+                const hit_fuzzy = (sentence.reading.match(new RegExp(fuzzy_noun, "g")) ?? []).length
+                if(hit_original < Math.max(hit_reading, hit_pronunciation,hit_fuzzy,hit_short)){
+                    return true
+                }
+            }
+        }
     return false;
 }
 
@@ -142,18 +172,24 @@ function getSentence(message) {
     const tokens = tokenizer.tokenize(message)
     const nouns = [] //名詞リスト
     let reading = "" //読み
+    let pronunciation = "" //発音
     for(let token of tokens){
         reading += token.reading ?? token.surface_form
+        pronunciation += token.pronunciation ?? token.surface_form
         if(token.pos == "名詞"){
             nouns.push(
                 {
+                    original:token.surface_form,
                     reading: token.reading && token.reading != "*" ? token.reading: token.surface_form,
+                    pronunciation: token.pronunciation && token.pronunciation != "*" ? token.pronunciation : token.surface_form
                 }
             )
         }
     }
     return{
+        original:message,
         reading: reading,
+        pronunciation: pronunciation,
         nouns: nouns,
     }
 }
