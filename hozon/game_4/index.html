@@ -15,10 +15,13 @@
         <div id="icons">
             <div id="functions">
                 <!--ペイントボタン-->
+                <button class="function" id="paint">🎨</button>
                 <!--カメラボタン-->
+                <button class="function" id="camera">📷</button>
             </div>
             <div id="tools">
                 <!--パレット-->
+                <input type="color" id="color" class="hide">
             </div>
         </div>
     </div>
@@ -28,6 +31,7 @@
                 <!--肖像画-->
                 <canvas id="face" width="300" height="300"></canvas>
                 <!--ビデオ-->
+                <video id="video" class="hide" width="300" height="300" autoplay></video>
             </div>
             <!--名前-->
             <div id="full_name" contenteditable="true">佐藤 清救</div>
@@ -44,6 +48,7 @@
             </div>
         </div>
         <!--落書きエリア-->
+        <canvas id="rakugaki" class="hide"></canvas>
     </div>
     <!--アップロードボタン(隠し)-->
     <input type="file" id="file">

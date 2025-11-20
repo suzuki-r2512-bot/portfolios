@@ -100,12 +100,23 @@ function clickCamera() {
 
 // カメラを起動する
 function loadVideo() {
-
+    navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video:{
+            width:{ ideal: 300},
+            height:{ ideal: 300}
+        }
+    }).then(function (stream){
+        video.srcObject = stream
+    })
 }
 
 // カメラで撮影した画像を表示する
 function takePhoto() {
-
+    const ctx = face.getContext("2d")
+    ctx.drawImage(video,0,0,face.width,face.height)
+    grayscale(ctx)
+    video.pause()
 }
 
 // ペイントボタンクリック時の処理
@@ -113,10 +124,10 @@ function clickPaint() {
     ranugaki_mode = !ranugaki_mode;
     paint.classList.toggle("on");
     // お絵かき領域を切り替える
-
-
+    rakugaki.classList.toggle("hide")
+    resize()
     // パレット切り替え
-
+    color?.classList.toggle("hide")
 }
 
 // 画面サイズ変更時の処理
@@ -127,22 +138,41 @@ function resize() {
 
 // ペンの書き始め
 function drawStart(e) {
-
+    if(ranugaki_mode){
+        const bounds = rakugaki.getBoundingClientRect()
+        const ctx = rakugaki.getContext("2d")
+        ctx.fillstyle = pen_color
+        ctx.fillRect((e.clientX - bounds.left),(e.clientY - bounds.top),1,1)
+        mouse_on = true
+        prev_point.x = (e.clientX - bounds.left)
+        prev_point.y = e.clientY - bounds.top
+    }
 }
 
 // ペンの書き途中
 function drawLine(e) {
-
+    if(ranugaki_mode && mouse_on){
+        const bounds = rakugaki.getBoundingClientRect()
+        const ctx = rakugaki.getContext("2d")
+        ctx.strokeStyle = pen_color
+        ctx.linewidth = 3
+        ctx.beginPath()
+        ctx.moveTo(prev_point.x,prev_point.y)
+        ctx.lineTo((e.clientX - bounds.left),(e.clientY - bounds.top))
+        ctx.stroke()
+        prev_point.x =(e.clientX - bounds.left)
+        prev_point.y =(e.clientY - bounds.top)
+    }
 }
 
 // ペンの書き終わり
 function drawEnd() {
-
+    mouse_on = false
 }
 
 // ペンの色変更
 function colorChange(e) {
-
+    pen_color = e.target.value
 }
 
 // 初期化
